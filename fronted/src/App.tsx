@@ -2,7 +2,34 @@ import React, { useState } from 'react';
 import { Toaster, toast } from 'sonner';
 import { Hero } from './components/Hero';
 import { ItineraryForm } from './components/ItineraryForm';
-import { LoadingSpinner } from './components/LoadingSpinner';
+import { LoadingSpinner } from './components/LoadingSpinner';import { useEffect, useState } from "react";
+
+function App() {
+  const [message, setMessage] = useState("");
+
+  // Ensure the API URL ends without a trailing slash
+  const apiUrl = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
+
+  useEffect(() => {
+    fetch(`${apiUrl}/api/hello`)
+      .then((res) => res.json())
+      .then((data) => setMessage(data.message))
+      .catch((err) => {
+        console.error("Failed to fetch:", err);
+        setMessage("Error loading message");
+      });
+  }, [apiUrl]);
+
+  return (
+    <div className="app">
+      <h1>TripCraft AI</h1>
+      <p>{message || "Loading…"}</p>
+    </div>
+  );
+}
+
+export default App;
+
 import { ResultsView } from './components/ResultsView';
 import type { ItineraryResponse } from './types';
 import { motion, AnimatePresence } from 'framer-motion';
